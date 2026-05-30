@@ -7,25 +7,55 @@ df = pd.read_csv("data/bank-marketing-dirty.csv", sep=";")
 # Normalize column names
 df.columns = df.columns.str.strip().str.lower()
 
-# Replace missing indicators
-df.replace(["unknown", "N/A", ""], pd.NA, inplace=True)
+# Replace dirty values with NULL
+df.replace(
+    ["unknown", "UNKNOWN", "Unknown", "N/A", "?", ""],
+    pd.NA,
+    inplace=True
+)
 
 # Remove duplicates
 df = df.drop_duplicates()
 
-# Fill numeric missing values
-numeric_cols = df.select_dtypes(include=["number"]).columns
+# Normalize text columns
+text_cols = df.select_dtypes(include=["object", "string"]).columns
 
-for col in numeric_cols:
-    df[col] = df[col].fillna(df[col].median())
+for col in text_cols:
+    df[col] = (
+        df[col]
+        .astype("string")
+        .str.strip()
+        .str.lower()
+    )
+
+# Force numeric columns
+numeric_columns = [
+    "age",
+    "balance",
+    "day",
+    "duration",
+    "campaign",
+    "pdays",
+    "previous"
+]
+
+for col in numeric_columns:
+    if col in df.columns:
+        df[col] = pd.to_numeric(df[col], errors="coerce")
+
+# Fill numeric missing values
+for col in numeric_columns:
+    if col in df.columns:
+        df[col] = df[col].fillna(df[col].median())
 
 # Fill text missing values
 text_cols = df.select_dtypes(include=["object", "string"]).columns
 
 for col in text_cols:
-    df[col] = df[col].fillna(df[col].mode()[0])
+    if not df[col].mode().empty:
+        df[col] = df[col].fillna(df[col].mode()[0])
 
-# Save cleaned CSV
+# Save cleaned dataset
 df.to_csv("data/bank-marketing-clean.csv", index=False)
 
 # PostgreSQL connection
@@ -33,7 +63,7 @@ engine = create_engine(
     "postgresql://admin:admin@localhost:5432/bankdb"
 )
 
-# Load data into PostgreSQL
+# Load into PostgreSQL
 df.to_sql(
     "bank_marketing",
     engine,
@@ -41,4 +71,5 @@ df.to_sql(
     index=False
 )
 
-print("\nData loaded into PostgreSQL successfully!")
+print("\nCleaned dataset saved successfully!")
+print("Data loaded into PostgreSQL successfully!")
