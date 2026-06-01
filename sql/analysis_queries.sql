@@ -58,3 +58,17 @@ SELECT job,
 FROM bank_marketing
 GROUP BY job
 ORDER BY subscribed DESC;
+
+-- Clientes por educação
+SELECT education,
+       COUNT(*) AS total
+FROM bank_marketing
+GROUP BY education
+ORDER BY total DESC;
+
+-- Saldo médio por estado civil
+SELECT marital,
+       ROUND(AVG(balance)::numeric,2) AS avg_balance
+FROM bank_marketing
+GROUP BY marital
+ORDER BY avg_balance DESC;

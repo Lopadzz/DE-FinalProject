@@ -6,6 +6,8 @@ Este projeto utiliza o dataset **Bank Marketing (dirty version)** fornecido na u
 
 O objetivo foi aplicar técnicas de Data Engineering para limpeza, transformação e carregamento dos dados para uma base de dados PostgreSQL executada em containers Docker.
 
+Além da ingestão e análise SQL, foi realizada uma Análise Exploratória de Dados (EDA) diretamente sobre os dados armazenados na base de dados PostgreSQL.
+
 ---
 
 ## Dataset
@@ -30,7 +32,10 @@ Características principais:
 * Adminer
 * Python
 * Pandas
+* SQLAlchemy
 * SQL
+* Jupyter Notebook
+* Matplotlib
 
 ---
 
@@ -42,10 +47,11 @@ Foram executadas as seguintes tarefas:
 2. Normalização dos nomes das colunas.
 3. Substituição de indicadores de valores em falta (`unknown`, `N/A` e valores vazios).
 4. Remoção de registos duplicados.
-5. Preenchimento de valores numéricos em falta através da mediana.
-6. Preenchimento de valores categóricos em falta através da moda.
-7. Criação de um novo dataset limpo.
-8. Carregamento dos dados para PostgreSQL.
+5. Conversão de colunas para tipos numéricos adequados.
+6. Preenchimento de valores numéricos em falta através da mediana.
+7. Preenchimento de valores categóricos em falta através da moda.
+8. Criação de um novo dataset limpo.
+9. Carregamento dos dados para PostgreSQL.
 
 ---
 
@@ -96,27 +102,58 @@ Foram desenvolvidas várias consultas SQL para análise dos dados, incluindo:
 
 ---
 
+## Análise Exploratória dos Dados (EDA)
+
+A EDA foi realizada diretamente sobre os dados armazenados na base de dados PostgreSQL.
+
+Principais análises realizadas:
+
+* Estrutura e dimensão do dataset
+* Estatísticas descritivas
+* Identificação de valores nulos
+* Identificação de inconsistências e anomalias nos dados
+* Distribuição das variáveis categóricas
+* Distribuição das variáveis numéricas
+
+Foram também produzidas visualizações gráficas para apoiar a análise:
+
+* Distribuição da variável alvo (`y`)
+* Top 10 profissões
+* Distribuição da idade
+* Distribuição do saldo bancário (boxplot)
+* Top 10 profissões por saldo médio
+
+---
+
 ## Estrutura do Projeto
 
 DE-FinalProject/
 
 ├── data/
 
-│   ├── bank-marketing-dirty.csv
+│ ├── bank-marketing-dirty.csv
 
-│   └── bank-marketing-clean.csv
+│ └── bank-marketing-clean.csv
 
 ├── scripts/
 
-│   └── load_data.py
+│ └── load_data.py
 
 ├── sql/
 
-│   ├── analysis_queries.sql
+│ ├── analysis_queries.sql
 
-│   └── analysis_results.md
+│ └── analysis_results.md
+
+├── notebooks/
+
+│ ├── EDA.ipynb
+
+│ └── EDA_visual.ipynb
 
 ├── docker-compose.yml
+
+├── .gitignore
 
 └── README.md
 
@@ -127,3 +164,5 @@ DE-FinalProject/
 O dataset original foi limpo, transformado e carregado com sucesso para PostgreSQL.
 
 As consultas SQL permitiram validar a qualidade dos dados e obter informação relevante sobre os clientes e os resultados das campanhas de marketing bancário.
+
+A Análise Exploratória de Dados permitiu identificar padrões, distribuições e possíveis inconsistências presentes no dataset, complementando a análise realizada através de SQL.
